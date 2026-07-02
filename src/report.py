@@ -62,15 +62,20 @@ def build_report(ticker: str, metrics_df: pd.DataFrame, chart_paths: list, outpu
     story.append(table)
     story.append(Spacer(1, 12))
 
-    best = metrics_df.sort_values("Sharpe Ratio", ascending=False).iloc[0]
+    best_sharpe = metrics_df.sort_values("Sharpe Ratio", ascending=False).iloc[0]
+    best_sortino = metrics_df.sort_values("Sortino Ratio", ascending=False).iloc[0]
+
     discussion = (
-        f"Based on risk-adjusted performance, the best strategy in this backtest is "
-        f"{best['Strategy']} with a Sharpe Ratio of {best['Sharpe Ratio']:.2f} "
-        f"and a Sortino Ratio of {best['Sortino Ratio']:.2f}. "
-        "For the AAPL backtest, the Mean Reversion strategy performs best on a risk-adjusted basis "
-        "because it has the highest Sharpe Ratio and Sortino Ratio among the tested strategies. "
-        "This suggests that buying during oversold conditions and exiting during overbought conditions "
-        "worked better for this ticker and sample period than the trend-following and custom strategies. "
+        f"Based on Sharpe Ratio, the best risk-adjusted strategy in this backtest is "
+        f"{best_sharpe['Strategy']} with a Sharpe Ratio of {best_sharpe['Sharpe Ratio']:.2f}. "
+        f"The strategy with the highest Sortino Ratio is {best_sortino['Strategy']} "
+        f"with a Sortino Ratio of {best_sortino['Sortino Ratio']:.2f}. "
+        "For the AAPL backtest, Mean Reversion is selected as the best active trading strategy "
+        "because it has the highest Sharpe Ratio among all tested strategies and produced strong total return "
+        "with fewer trades than the trend-following and custom strategies. "
+        "Buy & Hold had the highest total return and Sortino Ratio, but it also experienced the largest maximum drawdown. "
+        "This suggests that Mean Reversion offered the strongest overall risk-adjusted active strategy profile "
+        "for this ticker and sample period. "
         "The final conclusion depends on the selected ticker and sample period. "
         "Because the engine uses previous-day positions for next-day returns, the backtest avoids look-ahead bias. "
         "However, this simplified project does not include transaction costs, slippage, taxes, or survivorship-bias controls."
